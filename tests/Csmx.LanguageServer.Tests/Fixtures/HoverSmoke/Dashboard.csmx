@@ -1,0 +1,15 @@
+﻿using System;
+using Csmx.Tests.LanguageServerFixtures;
+using static Csmx.Tests.LanguageServerFixtures.Signals;
+
+namespace Csmx.Tests.HoverSmoke;
+
+public static class Dashboard
+{
+    public static UiNode Render()
+    {
+        var value = CreateSignal("");
+        var comparison = StringComparison.OrdinalIgnoreCase;
+        return <Text>{value}{comparison}</Text>;
+    }
+}

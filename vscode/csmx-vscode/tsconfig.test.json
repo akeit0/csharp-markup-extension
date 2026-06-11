@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "ES2022",
+    "outDir": "out-test",
+    "rootDir": "test/integration",
+    "lib": [
+      "ES2022",
+      "DOM"
+    ],
+    "types": [
+      "node",
+      "vscode"
+    ],
+    "strict": true
+  },
+  "include": [
+    "test/integration/**/*.ts"
+  ]
+}

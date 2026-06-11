@@ -1,0 +1,99 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <CsmxEnabled Condition="'$(CsmxEnabled)' == ''">true</CsmxEnabled>
+        <CsmxCompileMode Condition="'$(CsmxCompileMode)' == ''">factory</CsmxCompileMode>
+        <CsmxElementFactory Condition="'$(CsmxElementFactory)' == ''">Element</CsmxElementFactory>
+        <CsmxAttributeFactory Condition="'$(CsmxAttributeFactory)' == ''">Attr</CsmxAttributeFactory>
+        <CsmxTextFactory Condition="'$(CsmxTextFactory)' == ''">Text</CsmxTextFactory>
+        <CsmxFormattedTextChild Condition="'$(CsmxFormattedTextChild)' == ''"
+            >{TextFactory}({Value}, {Format})</CsmxFormattedTextChild
+        >
+        <CsmxAlignedFormattedTextChild Condition="'$(CsmxAlignedFormattedTextChild)' == ''"
+            >{TextFactory}({Value}, {Format}, {Alignment})</CsmxAlignedFormattedTextChild
+        >
+        <CsmxPropsFactory Condition="'$(CsmxPropsFactory)' == ''">Props</CsmxPropsFactory>
+        <CsmxChildrenFactory Condition="'$(CsmxChildrenFactory)' == ''"
+            >Children</CsmxChildrenFactory
+        >
+        <CsmxChildSequenceFactory Condition="'$(CsmxChildSequenceFactory)' == ''"
+            >ChildSequence</CsmxChildSequenceFactory
+        >
+        <CsmxKeyedSequenceElement Condition="'$(CsmxKeyedSequenceElement)' == ''" />
+        <CsmxKeyedSequenceItemsAttribute Condition="'$(CsmxKeyedSequenceItemsAttribute)' == ''"
+            >Items</CsmxKeyedSequenceItemsAttribute
+        >
+        <CsmxKeyedSequenceKeyAttribute Condition="'$(CsmxKeyedSequenceKeyAttribute)' == ''"
+            >Key</CsmxKeyedSequenceKeyAttribute
+        >
+        <CsmxKeyedSequenceTemplate Condition="'$(CsmxKeyedSequenceTemplate)' == ''" />
+        <CsmxComponentNames Condition="'$(CsmxComponentNames)' == ''" />
+        <CsmxComponentLowering Condition="'$(CsmxComponentLowering)' == ''"
+            >direct</CsmxComponentLowering
+        >
+        <CsmxComponentTemplate Condition="'$(CsmxComponentTemplate)' == ''" />
+        <CsmxFluentCreate Condition="'$(CsmxFluentCreate)' == ''">new {Element}()</CsmxFluentCreate>
+        <CsmxFluentAttribute Condition="'$(CsmxFluentAttribute)' == ''"
+            >.{Name}({Value})</CsmxFluentAttribute
+        >
+        <CsmxFluentTextChild Condition="'$(CsmxFluentTextChild)' == ''"
+            >.Content({Value})</CsmxFluentTextChild
+        >
+        <CsmxFluentExpressionChild Condition="'$(CsmxFluentExpressionChild)' == ''"
+            >.Content({Value})</CsmxFluentExpressionChild
+        >
+        <CsmxFluentFormattedExpressionChild
+            Condition="'$(CsmxFluentFormattedExpressionChild)' == ''"
+            >.Content({Value}, {Format}, {Alignment})</CsmxFluentFormattedExpressionChild
+        >
+        <CsmxFluentElementChild Condition="'$(CsmxFluentElementChild)' == ''"
+            >.Content({Value})</CsmxFluentElementChild
+        >
+        <CsmxFluentComponentTemplate Condition="'$(CsmxFluentComponentTemplate)' == ''" />
+    </PropertyGroup>
+
+    <ItemGroup Condition="'$(CsmxEnabled)' == 'true'">
+        <Csmx
+            Include="**\*.csmx"
+            Exclude="$(BaseIntermediateOutputPath)**;$(OutputPath)**;$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)"
+        />
+        <Compile Remove="@(Csmx)" />
+        <Compile Remove="$(MSBuildProjectDirectory)\Generated\Csmx\**\*.cs" />
+        <None Remove="@(Csmx)" />
+        <None Include="@(Csmx)" />
+        <AdditionalFiles Include="@(Csmx)" />
+        <ProjectReference
+            Include="$(MSBuildThisFileDirectory)..\src\Csmx.SourceGenerator\Csmx.SourceGenerator.csproj"
+            OutputItemType="Analyzer"
+            ReferenceOutputAssembly="false"
+            PrivateAssets="all"
+        />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(CsmxEnabled)' == 'true'">
+        <CompilerVisibleProperty Include="MSBuildProjectDirectory" />
+        <CompilerVisibleProperty Include="RootNamespace" />
+        <CompilerVisibleProperty Include="CsmxCompileMode" />
+        <CompilerVisibleProperty Include="CsmxElementFactory" />
+        <CompilerVisibleProperty Include="CsmxAttributeFactory" />
+        <CompilerVisibleProperty Include="CsmxTextFactory" />
+        <CompilerVisibleProperty Include="CsmxFormattedTextChild" />
+        <CompilerVisibleProperty Include="CsmxAlignedFormattedTextChild" />
+        <CompilerVisibleProperty Include="CsmxPropsFactory" />
+        <CompilerVisibleProperty Include="CsmxChildrenFactory" />
+        <CompilerVisibleProperty Include="CsmxChildSequenceFactory" />
+        <CompilerVisibleProperty Include="CsmxKeyedSequenceElement" />
+        <CompilerVisibleProperty Include="CsmxKeyedSequenceItemsAttribute" />
+        <CompilerVisibleProperty Include="CsmxKeyedSequenceKeyAttribute" />
+        <CompilerVisibleProperty Include="CsmxKeyedSequenceTemplate" />
+        <CompilerVisibleProperty Include="CsmxComponentNames" />
+        <CompilerVisibleProperty Include="CsmxComponentLowering" />
+        <CompilerVisibleProperty Include="CsmxComponentTemplate" />
+        <CompilerVisibleProperty Include="CsmxFluentCreate" />
+        <CompilerVisibleProperty Include="CsmxFluentAttribute" />
+        <CompilerVisibleProperty Include="CsmxFluentTextChild" />
+        <CompilerVisibleProperty Include="CsmxFluentExpressionChild" />
+        <CompilerVisibleProperty Include="CsmxFluentFormattedExpressionChild" />
+        <CompilerVisibleProperty Include="CsmxFluentElementChild" />
+        <CompilerVisibleProperty Include="CsmxFluentComponentTemplate" />
+    </ItemGroup>
+</Project>

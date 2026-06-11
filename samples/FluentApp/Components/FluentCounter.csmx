@@ -1,0 +1,44 @@
+﻿namespace Csmx.Samples.FluentApp.Components;
+
+public static class FluentCounter
+{
+    public static Panel Render(int size) =>
+        <Panel>
+            <Button Size={size}>Click</Button>
+        </Panel>;
+}
+
+public interface IFluentNode;
+
+public sealed class Panel : IFluentNode
+{
+    private readonly List<IFluentNode> children = [];
+
+    public Panel Content(IFluentNode value)
+    {
+        children.Add(value);
+        return this;
+    }
+
+    public override string ToString() => $"Panel({string.Join(", ", children)})";
+}
+
+public sealed class Button : IFluentNode
+{
+    private int size;
+    private  string content = "";
+
+    public Button Size(int value)
+    {
+        size = value;
+        return this;
+    }
+
+    public Button Content(string value)
+    {
+        content = value;
+        return this;
+    }
+
+    public override string ToString() => $"Button(Size={size}, Content={content})";
+}

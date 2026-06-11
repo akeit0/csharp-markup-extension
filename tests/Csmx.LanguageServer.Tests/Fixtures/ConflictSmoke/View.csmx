@@ -1,0 +1,8 @@
+﻿using Csmx.Tests.LanguageServerFixtures;
+
+namespace Csmx.Tests.ConflictSmoke;
+
+public static class View
+{
+    public static UiNode Render() => <Column />;
+}

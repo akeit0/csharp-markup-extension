@@ -1,0 +1,11 @@
+﻿using Csmx.Tests.LanguageServerFixtures;
+
+namespace Csmx.Tests.FluentReferenceApp;
+
+public static class CounterView
+{
+    public static UiNode Render() =>
+        <Column Padding={24} Height={100}>
+            <Button />
+        </Column>;
+}

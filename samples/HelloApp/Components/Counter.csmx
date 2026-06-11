@@ -1,0 +1,25 @@
+﻿using Csmx.SampleRuntime;
+
+namespace Csmx.Samples.HelloApp.Components;
+
+public sealed record CounterViewProps
+{
+    public string Name { get; init; } = string.Empty;
+
+    public int Count { get; init; }
+}
+
+public static class Counter
+{
+    public static VNode Render(string name, int count)
+    {
+        Func<CounterViewProps, VNode[], VNode> View = (props, children) =>
+            <stack class="counter">
+                <text>Hello {props.Name}</text>
+                <text> Count: {props.Count}</text>
+                <button disabled={props.Count == 0}>Click</button>
+            </stack>;
+
+        return <View name={name} count={count}/>;
+    }
+}

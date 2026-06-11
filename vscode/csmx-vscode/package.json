@@ -1,0 +1,115 @@
+{
+  "name": "csmx-vscode",
+  "displayName": "C# JSX MVP",
+  "description": "Minimal VS Code extension for C# files with JSX-like expression syntax.",
+  "version": "0.1.0",
+  "publisher": "local",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "activationEvents": [
+    "onLanguage:csmx",
+    "onCommand:editor.action.formatDocument",
+    "onCommand:csmx.showGeneratedCSharp",
+    "onCommand:csmx.inspectProjectBinding",
+    "onCommand:csmx.reloadProjectContext",
+    "onCommand:csmx.inspectTokenAtCursor"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "csmx",
+        "aliases": [
+          "C# JSX",
+          "csmx"
+        ],
+        "extensions": [
+          ".csmx"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "csmx",
+        "scopeName": "source.csmx",
+        "path": "./syntaxes/csmx.tmLanguage.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "csmx.showGeneratedCSharp",
+        "title": "CSMX: Show Generated C#"
+      },
+      {
+        "command": "csmx.inspectProjectBinding",
+        "title": "CSMX: Inspect Project Binding"
+      },
+      {
+        "command": "csmx.reloadProjectContext",
+        "title": "CSMX: Reload Project Context"
+      },
+      {
+        "command": "csmx.inspectTokenAtCursor",
+        "title": "CSMX: Inspect Token At Cursor"
+      }
+    ],
+    "configuration": {
+      "title": "C# JSX",
+      "properties": {
+        "csmx.format.indentSize": {
+          "type": "number",
+          "default": 4,
+          "minimum": 1,
+          "maximum": 8,
+          "description": "Number of spaces used by the CSMX formatter when the editor does not provide indentation options."
+        },
+        "csmx.server.directory": {
+          "type": "string",
+          "default": "",
+          "description": "Absolute path to a published Csmx.LanguageServer directory. If empty, the extension uses its bundled ./server directory. This extension starts only the CSMX language server, not an additional C# language server."
+        },
+        "csmx.project.configuration": {
+          "type": "string",
+          "default": "",
+          "description": "MSBuild Configuration used for CSMX editor project context. Empty uses the project or MSBuild default."
+        },
+        "csmx.project.targetFramework": {
+          "type": "string",
+          "default": "",
+          "description": "MSBuild TargetFramework used for CSMX editor project context. Empty uses the project TargetFramework or the first TargetFrameworks value."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "publish:server": "node ./scripts/publish-server.mjs",
+    "compile": "tsc -p ./",
+    "compile:test": "tsc -p ./tsconfig.test.json",
+    "test:unit": "node --test ./test/unit/*.test.mjs",
+    "test:grammar": "node --test ./test/unit/grammar.test.mjs",
+    "test:formatter": "node --test ./test/unit/formatter.test.mjs",
+    "test:integration": "npm run publish:server && npm run compile && npm run compile:test && node ./test/integration/run.mjs",
+    "prepackage": "npm run test:unit && npm run test:integration",
+    "build": "npm run publish:server && npm run compile",
+    "package": "vsce package --allow-missing-repository",
+    "watch": "tsc -watch -p ./",
+    "vscode:prepublish": "npm run build"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^9.0.1",
+    "vscode-oniguruma": "^2.0.1",
+    "vscode-textmate": "^9.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.30",
+    "@types/vscode": "^1.90.0",
+    "@vscode/test-electron": "^3.0.0",
+    "@vscode/vsce": "^3.9.2",
+    "typescript": "^5.4.5"
+  }
+}

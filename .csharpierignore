@@ -1,0 +1,9 @@
+**/*.csproj
+**/*.props
+**/*.targets
+**/*.slnx
+**/bin/**
+**/obj/**
+**/out/**
+**/out-test/**
+**/server/**

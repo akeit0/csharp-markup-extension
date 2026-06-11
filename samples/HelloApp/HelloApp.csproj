@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net10.0</TargetFramework>
+        <RootNamespace>Csmx.Samples.HelloApp</RootNamespace>
+        <CsmxElementFactory>global::Csmx.SampleRuntime.Csmx.Element</CsmxElementFactory>
+        <CsmxAttributeFactory>global::Csmx.SampleRuntime.Csmx.Attr</CsmxAttributeFactory>
+        <CsmxTextFactory>global::Csmx.SampleRuntime.Csmx.Text</CsmxTextFactory>
+        <CsmxPropsFactory>global::Csmx.SampleRuntime.Csmx.Props</CsmxPropsFactory>
+        <CsmxChildrenFactory>global::Csmx.SampleRuntime.Csmx.Children</CsmxChildrenFactory>
+        <CsmxChildSequenceFactory>global::Csmx.SampleRuntime.Csmx.ChildSequence</CsmxChildSequenceFactory>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Csmx.SampleRuntime\Csmx.SampleRuntime.csproj" />
+    </ItemGroup>
+
+    <Import Project="..\csmx-local.targets" />
+</Project>

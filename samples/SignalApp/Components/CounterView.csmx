@@ -1,0 +1,24 @@
+﻿using Csmx.EnagaSignals;
+using static Csmx.EnagaSignals.Signals;
+
+namespace Csmx.Samples.SignalApp.Components;
+
+public static class CounterView
+{
+    static int renderCount = 0;
+    public static UiNode Render()
+    {
+       var (count, setCount) = CreateSignal(0);
+       renderCount++;
+       return <Column Padding={24} Gap={14} Background="#f5f7fb">
+            <Text FontSize={28} FontWeight={700} Color="#152033">CSMX Signals</Text>
+            <Text FontSize={18}>Count: {count, 3}</Text>
+            <Text FontSize={18} Color="#0011ff">Render Count: {renderCount}</Text>
+            <Row Gap={10}>
+                <Button Width={70} OnClick={() => setCount(value => value - 1)}>-</Button>
+                <Button Width={70} OnClick={() => setCount(value => value + 1)}>+1</Button>
+                <Button Width={70} Background="#475569" OnClick={() => count.Set(0)}>Reset</Button>
+            </Row>
+        </Column>;
+    }
+}

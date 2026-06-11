@@ -1,0 +1,12 @@
+﻿using static Csmx.Tests.LanguageServerFixtures.Signals;
+
+namespace Csmx.Tests.ProjectContextSmoke.Components;
+
+public static class CounterView
+{
+    public static UiNode Render()
+    {
+        var (count, setCount) = CreateSignal(0);
+        return <Column><Text>Count: {count}</Text></Column>;
+    }
+}

@@ -1,0 +1,10 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <CsmxCompileMode>fluent</CsmxCompileMode>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TestRuntime\TestRuntime.csproj" />
+  </ItemGroup>
+  <Import Project="..\csmx-test.targets" />
+</Project>

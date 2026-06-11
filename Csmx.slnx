@@ -1,0 +1,21 @@
+﻿<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Csmx.Compiler/Csmx.Compiler.csproj" />
+    <Project Path="src/Csmx.EnagaSignals/Csmx.EnagaSignals.csproj" />
+    <Project Path="src/Csmx.SourceGenerator/Csmx.SourceGenerator.csproj" />
+    <Project Path="src/Csmx.LanguageServer/Csmx.LanguageServer.csproj" />
+  </Folder>
+  <Folder Name="/samples/">
+    <Project Path="samples/Csmx.SampleRuntime/Csmx.SampleRuntime.csproj" />
+    <Project Path="samples/HelloApp/HelloApp.csproj" />
+    <Project Path="samples/FactoryApp/FactoryApp.csproj" />
+    <Project Path="samples/FluentApp/FluentApp.csproj" />
+    <Project Path="samples/SignalApp/SignalApp.csproj" />
+    <Project Path="samples/SignalDashboardApp/SignalDashboardApp.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Csmx.Compiler.Tests/Csmx.Compiler.Tests.csproj" />
+    <Project Path="tests/Csmx.EnagaSignals.Tests/Csmx.EnagaSignals.Tests.csproj" />
+    <Project Path="tests/Csmx.LanguageServer.Tests/Csmx.LanguageServer.Tests.csproj" />
+  </Folder>
+</Solution>

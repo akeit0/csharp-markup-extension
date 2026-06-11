@@ -1,0 +1,25 @@
+﻿using Csmx.SampleRuntime;
+
+namespace Csmx.Samples.FactoryApp.Components;
+
+public sealed record FactoryCounterViewProps
+{
+    public string Name { get; init; } = string.Empty;
+
+    public int Count { get; init; }
+}
+
+public static class FactoryCounter
+{
+    static VNode FactoryView(FactoryCounterViewProps props, VNode[] children) =>
+        <panel class="factory-counter">
+            <label>Factory Hello {props.Name}</label>
+            <label> Count: {props.Count}</label>
+            <action disabled={props.Count == 0}>Run</action>
+        </panel>;
+
+    public static VNode Render(string name, int count)
+    {
+        return <FactoryView name={name} count={count}/>;
+    }
+}

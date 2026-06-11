@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Enaga\src\Enaga.Input\Enaga.Input.csproj" />
+        <ProjectReference Include="..\..\Enaga\src\Enaga.Layout\Enaga.Layout.csproj" />
+        <ProjectReference Include="..\..\Enaga\src\Enaga.Rendering\Enaga.Rendering.csproj" />
+        <ProjectReference Include="..\..\Enaga\src\Enaga.Scene\Enaga.Scene.csproj" />
+    </ItemGroup>
+</Project>

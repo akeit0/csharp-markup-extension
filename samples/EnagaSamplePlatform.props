@@ -1,0 +1,30 @@
+﻿<Project>
+  <PropertyGroup>
+    <CsmxSamplePlatform Condition="'$(CsmxSamplePlatform)' == '' and $([MSBuild]::IsOSPlatform('Windows'))">Windows</CsmxSamplePlatform>
+    <CsmxSamplePlatform Condition="'$(CsmxSamplePlatform)' == '' and $([MSBuild]::IsOSPlatform('OSX'))">Mac</CsmxSamplePlatform>
+    <CsmxSamplePlatform Condition="'$(CsmxSamplePlatform)' == ''">Default</CsmxSamplePlatform>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(CsmxSamplePlatform)' == 'Windows'">
+    <DefineConstants>$(DefineConstants);HOST_WINDOWS</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(CsmxSamplePlatform)' == 'Mac'">
+    <DefineConstants>$(DefineConstants);HOST_MACOS</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile
+      Include="$(MSBuildThisFileDirectory)Shared\EnagaSamplePlatformIntegration.cs"
+      Link="EnagaSamplePlatformIntegration.cs"
+    />
+    <ProjectReference
+      Include="$(MSBuildThisFileDirectory)..\Enaga\src\Enaga.Platforms.Windows\Enaga.Platforms.Windows.csproj"
+      Condition="'$(CsmxSamplePlatform)' == 'Windows'"
+    />
+    <ProjectReference
+      Include="$(MSBuildThisFileDirectory)..\Enaga\src\Enaga.Platforms.Mac\Enaga.Platforms.Mac.csproj"
+      Condition="'$(CsmxSamplePlatform)' == 'Mac'"
+    />
+  </ItemGroup>
+</Project>

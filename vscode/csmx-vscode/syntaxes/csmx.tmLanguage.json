@@ -1,0 +1,219 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "C# JSX",
+  "scopeName": "source.csmx",
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#strings" },
+    { "include": "#csharpOperators" },
+    { "include": "#jsxElements" },
+    { "include": "#csharpKeywords" }
+  ],
+  "repository": {
+    "attributes": {
+      "patterns": [
+        {
+          "name": "meta.attribute.csharp.csmx",
+          "begin": "\\[",
+          "beginCaptures": {
+            "0": { "name": "punctuation.section.brackets.begin.csharp.csmx" }
+          },
+          "end": "\\]",
+          "endCaptures": {
+            "0": { "name": "punctuation.section.brackets.end.csharp.csmx" }
+          },
+          "patterns": [
+            { "name": "entity.name.type.attribute.csharp.csmx", "match": "\\b[A-Z_][A-Za-z0-9_]*(?=\\b|\\()" },
+            { "include": "#strings" },
+            { "include": "#numbers" },
+            { "include": "#operators" }
+          ]
+        }
+      ]
+    },
+    "comments": {
+      "patterns": [
+        { "name": "comment.line.double-slash.csmx", "match": "//.*$" },
+        { "name": "comment.block.csmx", "begin": "/\\*", "end": "\\*/" }
+      ]
+    },
+    "csharpKeywords": {
+      "patterns": [
+        {
+          "name": "storage.modifier.csharp.csmx",
+          "match": "\\b(abstract|async|const|extern|internal|new|override|private|protected|public|readonly|required|sealed|static|unsafe|virtual|volatile)\\b"
+        },
+        {
+          "name": "storage.type.primitive.csharp.csmx",
+          "match": "\\b(bool|byte|char|decimal|double|dynamic|float|int|long|nint|nuint|object|sbyte|short|string|uint|ulong|ushort|void)\\b"
+        },
+        {
+          "name": "keyword.control.csharp.csmx",
+          "match": "\\b(as|base|break|case|catch|checked|continue|default|delegate|do|else|event|explicit|false|finally|fixed|for|foreach|goto|if|implicit|in|is|lock|namespace|null|operator|out|params|ref|return|sizeof|stackalloc|switch|this|throw|true|try|typeof|unchecked|using|var|when|where|while|yield)\\b"
+        }
+      ]
+    },
+    "declarations": {
+      "patterns": [
+        {
+          "name": "meta.class.csharp.csmx",
+          "match": "\\b(class|record)\\s+([A-Za-z_][A-Za-z0-9_]*)",
+          "captures": {
+            "1": { "name": "storage.type.class.csharp.csmx" },
+            "2": { "name": "entity.name.type.class.csharp.csmx" }
+          }
+        },
+        {
+          "name": "meta.struct.csharp.csmx",
+          "match": "\\b(struct)\\s+([A-Za-z_][A-Za-z0-9_]*)",
+          "captures": {
+            "1": { "name": "storage.type.struct.csharp.csmx" },
+            "2": { "name": "entity.name.type.struct.csharp.csmx" }
+          }
+        },
+        {
+          "name": "meta.interface.csharp.csmx",
+          "match": "\\b(interface)\\s+([A-Za-z_][A-Za-z0-9_]*)",
+          "captures": {
+            "1": { "name": "storage.type.interface.csharp.csmx" },
+            "2": { "name": "entity.name.type.interface.csharp.csmx" }
+          }
+        },
+        {
+          "name": "meta.enum.csharp.csmx",
+          "match": "\\b(enum)\\s+([A-Za-z_][A-Za-z0-9_]*)",
+          "captures": {
+            "1": { "name": "storage.type.enum.csharp.csmx" },
+            "2": { "name": "entity.name.type.enum.csharp.csmx" }
+          }
+        },
+        {
+          "name": "meta.namespace.csharp.csmx",
+          "match": "\\b(namespace|using)\\b",
+          "captures": {
+            "1": { "name": "keyword.control.import.csharp.csmx" }
+          }
+        }
+      ]
+    },
+    "expressions": {
+      "patterns": [
+        {
+          "name": "meta.embedded.block.csharp.csmx",
+          "begin": "\\{",
+          "beginCaptures": {
+            "0": { "name": "punctuation.section.embedded.begin.csmx" }
+          },
+          "end": "\\}",
+          "endCaptures": {
+            "0": { "name": "punctuation.section.embedded.end.csmx" }
+          },
+          "patterns": [
+            { "include": "#comments" },
+            { "include": "#strings" },
+            { "include": "#csharpOperators" },
+            { "include": "#csharpKeywords" }
+          ]
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.triple.raw.csharp.csmx",
+          "begin": "\"\"\"",
+          "end": "\"\"\""
+        },
+        {
+          "name": "string.quoted.double.csharp.csmx",
+          "begin": "\\$?@?\"",
+          "end": "\"",
+          "patterns": [
+            { "name": "constant.character.escape.csharp.csmx", "match": "\\\\." },
+            { "include": "#expressions" }
+          ]
+        },
+        {
+          "name": "string.quoted.single.csharp.csmx",
+          "begin": "'",
+          "end": "'",
+          "patterns": [
+            { "name": "constant.character.escape.csharp.csmx", "match": "\\\\." }
+          ]
+        }
+      ]
+    },
+    "jsxElements": {
+      "patterns": [
+        {
+          "name": "meta.tag.self-closing.csmx",
+          "begin": "(^\\s*|\\b(?:return|throw|yield|case)\\s+|=>\\s*|[=\\(\\[\\{,:?;>]\\s*)(<)([A-Za-z_][A-Za-z0-9_.:-]*)(?=[^<>,]*?/>)",
+          "beginCaptures": {
+            "2": { "name": "punctuation.definition.tag.begin.csmx" },
+            "3": { "name": "entity.name.tag.csmx" }
+          },
+          "end": "(/>)",
+          "endCaptures": {
+            "1": { "name": "punctuation.definition.tag.end.csmx" }
+          },
+          "patterns": [
+            {
+              "match": "(\\s*)([A-Za-z_][A-Za-z0-9_.:-]*)(?=\\s*(=|/?>))",
+              "captures": {
+                "2": { "name": "entity.other.attribute-name.csmx" }
+              }
+            },
+            { "include": "#csharpOperators" },
+            { "name": "keyword.operator.assignment.csmx", "match": "(?<=[A-Za-z0-9_.:-])\\s*=\\s*(?=(\"|\\{))" },
+            { "include": "#strings" },
+            { "include": "#expressions" }
+          ]
+        },
+        {
+          "name": "meta.element.csmx",
+          "begin": "(^\\s*|\\b(?:return|throw|yield|case)\\s+|=>\\s*|[=\\(\\[\\{,:?;>]\\s*)(<)([A-Za-z_][A-Za-z0-9_.:-]*)(?=[^<>,]*?>)(?![^<>,]*?/>)",
+          "beginCaptures": {
+            "2": { "name": "punctuation.definition.tag.begin.csmx" },
+            "3": { "name": "entity.name.tag.csmx" }
+          },
+          "end": "(</)(\\3)(\\s*>)",
+          "endCaptures": {
+            "1": { "name": "punctuation.definition.tag.begin.csmx" },
+            "2": { "name": "entity.name.tag.csmx" },
+            "3": { "name": "punctuation.definition.tag.end.csmx" }
+          },
+          "patterns": [
+            {
+              "match": "(\\s*)([A-Za-z_][A-Za-z0-9_.:-]*)(?=\\s*(=|/?>))",
+              "captures": {
+                "2": { "name": "entity.other.attribute-name.csmx" }
+              }
+            },
+            { "include": "#csharpOperators" },
+            { "name": "keyword.operator.assignment.csmx", "match": "(?<=[A-Za-z0-9_.:-])\\s*=\\s*(?=(\"|\\{))" },
+            { "include": "#strings" },
+            { "include": "#expressions" },
+            { "include": "#jsxElements" },
+            { "include": "#jsxText" }
+          ]
+        }
+      ]
+    },
+    "jsxText": {
+      "patterns": [
+        {
+          "name": "meta.text.csmx",
+          "match": "(?<=[>}])[^<>{}]+(?=[<{])"
+        }
+      ]
+    },
+    "csharpOperators": {
+      "patterns": [
+        {
+          "name": "keyword.operator.lambda.csharp.csmx",
+          "match": "=>"
+        }
+      ]
+    }
+  }
+}

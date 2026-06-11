@@ -1,0 +1,8 @@
+src/**
+test/**
+tests/**
+out-test/**
+tsconfig.json
+tsconfig.test.json
+*.vsix
+.vscode-test/**

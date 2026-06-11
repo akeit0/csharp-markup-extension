@@ -1,0 +1,117 @@
+﻿{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "dev-check",
+      "type": "process",
+      "command": "node",
+      "args": [
+        "${workspaceFolder}/eng/dev-check.mjs"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "dev-check: skip extension integration",
+      "type": "process",
+      "command": "node",
+      "args": [
+        "${workspaceFolder}/eng/dev-check.mjs",
+        "--skip-extension-integration"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "extension: build",
+      "type": "process",
+      "command": "npm.cmd",
+      "args": [
+        "run",
+        "build"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/vscode/csmx-vscode"
+      },
+      "group": "build",
+      "problemMatcher": "$tsc"
+    },
+    {
+      "label": "extension: package",
+      "type": "process",
+      "command": "npm.cmd",
+      "args": [
+        "run",
+        "package"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/vscode/csmx-vscode"
+      },
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "extension: test unit",
+      "type": "process",
+      "command": "npm.cmd",
+      "args": [
+        "run",
+        "test:unit"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/vscode/csmx-vscode"
+      },
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "extension: test integration",
+      "type": "process",
+      "command": "npm.cmd",
+      "args": [
+        "run",
+        "test:integration"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/vscode/csmx-vscode"
+      },
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "extension: watch",
+      "type": "process",
+      "command": "npm.cmd",
+      "args": [
+        "run",
+        "watch"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/vscode/csmx-vscode"
+      },
+      "isBackground": true,
+      "problemMatcher": "$tsc-watch"
+    },
+    {
+      "label": "samples: signal dashboard once",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "run",
+        "--project",
+        "${workspaceFolder}/samples/SignalDashboardApp",
+        "--",
+        "--once"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "test",
+      "problemMatcher": []
+    }
+  ]
+}

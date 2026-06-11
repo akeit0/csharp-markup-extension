@@ -1,0 +1,41 @@
+﻿{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Extension: Launch CSMX",
+      "type": "extensionHost",
+      "request": "launch",
+      "preLaunchTask": "extension: build",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}/vscode/csmx-vscode"
+      ],
+      "outFiles": [
+        "${workspaceFolder}/vscode/csmx-vscode/out/**/*.js"
+      ]
+    },
+    {
+      "name": "Extension: Package VSIX",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run package",
+      "cwd": "${workspaceFolder}/vscode/csmx-vscode",
+      "env": {}
+    },
+    {
+      "name": "Extension: Integration Smoke",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run test:integration",
+      "cwd": "${workspaceFolder}/vscode/csmx-vscode",
+      "env": {}
+    },
+    {
+      "name": "Dev Check",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "node \"${workspaceFolder}/eng/dev-check.mjs\"",
+      "cwd": "${workspaceFolder}",
+      "env": {}
+    }
+  ]
+}

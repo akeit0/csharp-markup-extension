@@ -1,0 +1,68 @@
+﻿using Csmx.EnagaSignals;
+using static Csmx.EnagaSignals.Signals;
+
+namespace Csmx.Samples.SignalDashboardApp.Components;
+
+public sealed record TodoItem(int Id, string Title, int Estimate);
+
+public static class Dashboard
+{
+    public static int RenderCalls { get; private set; }
+
+    public static UiNode Render()
+    {
+        RenderCalls++;
+
+        var (filter, setFilter) = CreateSignal("");
+        var (items, setItems) = CreateSignal(TodoSeed.Create());
+        var visible = items.Value
+            .Where(item =>
+                    filter.Value.Length == 0
+                    || item.Title.Contains(filter.Value, StringComparison.OrdinalIgnoreCase)
+                )
+                .ToArray();
+        var totalEstimate = visible.Sum(item => item.Estimate);
+        
+        return <Column Padding={20} Gap={12} Background="#eef2f7">
+            <Text FontSize={28} FontWeight={700} Color="#102033">Signal Dashboard</Text>
+            <Row Gap={8}>
+                <Button Width={120} OnClick={() => setFilter(value => value.Length == 0 ? "UI" : "")}>Toggle UI</Button>
+                <Button Width={120} Background="#475569" OnClick={() => setItems(value => value.Reverse().ToArray())}>Reverse</Button>
+                <Button Width={120} Background="#0f766e" OnClick={() => setItems(_ => TodoSeed.Create())}>Reset</Button>
+            </Row>
+            <Text FontSize={16} Color="#334155">Visible: {visible.Length} / {items.Value.Length} Estimate: {totalEstimate,3}</Text>
+            <Column Gap={8}>
+                <For Items={visible} Key={item => item.Id}>
+                    {item => TodoRow(item)}
+                </For>
+            </Column>
+        </Column>;
+    }
+
+    private static UiElement TodoRow(TodoItem item)
+    {
+        var (editing, setEditing) = CreateSignal(false);
+
+        return <Row Gap={8} Padding={8} Background="#ffffff" Border="#cbd5e1" Radius={6}>
+            <Text Width={250} Color="#111827">#{item.Id} {item.Title}</Text>
+            <Text Width={72} Color="#475569">Pts: {item.Estimate}</Text>
+            <Button Width={88} OnClick={() => setEditing(value => !value)}>
+                {() => editing.Value ? "Close" : "Edit"}
+            </Button>
+            {editing.Value
+                ? <Text Width={100} Color="#0f766e">editing</Text>
+                : <Text Width={100} Color="#64748b">ready</Text>}
+        </Row>;
+    }
+}
+
+internal static class TodoSeed
+{
+    public static TodoItem[] Create() =>
+        [
+            new(1, "Refine UI compiler backend", 5),
+            new(2, "Add keyed Signal rows", 3),
+            new(3, "Measure large dashboard layout", 8),
+            new(4, "Document retained rendering plan", 2),
+        ];
+}
