@@ -2,6 +2,8 @@
 
 This repository is a minimal proof-of-concept for a C# project that accepts `.csmx` files containing mostly-normal C# plus JSX-like element expressions.
 
+IDE support is currently limited to vscode.
+
 ## Quick Start
 
 ```bash
