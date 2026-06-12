@@ -289,7 +289,7 @@ Useful commands while a `.csmx` file is active:
 ## Limitation
 
 - It is not a Roslyn extension, so IDE features must be implemented from scratch.
-- Unlike Razor, official ExternalAccess is not provided, so the workspace cannot be shared (cannot co-host).
+- Unlike Razor, official ExternalAccess is not provided from Roslyn, so the workspace cannot be shared with normal C# (cannot co-host).
 
 ## LICENSE
 
