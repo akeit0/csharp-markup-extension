@@ -13,80 +13,119 @@ internal sealed partial class LspServer
 
     private object HandleCompletion(JsonElement parameters)
     {
-        if (
-            !TryReadDocumentPosition(parameters, out var uri, out var line, out var character)
-            || !_documents.TryGetValue(uri, out var document)
-        )
+        try
         {
-            return EmptyCompletionResult;
-        }
-
-        var index = document.LineMap.GetIndex(line, character);
-        var isTagCompletion = IsTagCompletion(document.Text, index);
-        var isAttributeCompletion = IsAttributeCompletion(document.Text, index);
-        if (!isTagCompletion && !isAttributeCompletion)
-        {
-            if (TryCreateDocumentSnapshot(document, out var csharpSnapshot))
+            if (
+                !TryReadDocumentPosition(parameters, out var uri, out var line, out var character)
+                || !_documents.TryGetValue(uri, out var document)
+            )
             {
-                var csharpItems = new Dictionary<string, object>(StringComparer.Ordinal);
-                AddRoslynCompletionItems(
-                    csharpItems,
-                    _roslynWorkspace.GetCSharpCompletions(csharpSnapshot, index)
-                );
-                return CompletionList(csharpItems.Values.ToArray());
+                return EmptyCompletionResult;
             }
 
-            return EmptyCompletionResult;
-        }
+            var index = document.LineMap.GetIndex(line, character);
+            var isTagCompletion = IsTagCompletion(document.Text, index);
+            var isAttributeCompletion = IsAttributeCompletion(document.Text, index);
+            if (!isTagCompletion && !isAttributeCompletion)
+            {
+                if (TryCreateDocumentSnapshot(document, out var csharpSnapshot))
+                {
+                    var csharpItems = new Dictionary<string, object>(StringComparer.Ordinal);
+                    AddRoslynCompletionItems(
+                        csharpItems,
+                        _roslynWorkspace.GetCSharpCompletions(csharpSnapshot, index)
+                    );
+                    return CompletionList(csharpItems.Values.ToArray());
+                }
 
-        var completionFacts = CsmxSourceFacts.GetCompletionFacts(document.Text);
-        var items = new Dictionary<string, object>(StringComparer.Ordinal);
+                return EmptyCompletionResult;
+            }
 
-        if (isTagCompletion)
-        {
-            AddTagCompletionItems(items, completionFacts);
-            if (TryCreateDocumentSnapshot(document, out var snapshot))
+            var completionFacts = CsmxSourceFacts.GetCompletionFacts(document.Text);
+            var items = new Dictionary<string, object>(StringComparer.Ordinal);
+
+            if (isTagCompletion)
+            {
+                AddTagCompletionItems(items, completionFacts);
+                if (TryCreateDocumentSnapshot(document, out var snapshot))
+                {
+                    AddRoslynCompletionItems(
+                        items,
+                        _roslynWorkspace.GetTagCompletions(snapshot, index)
+                    );
+                }
+
+                return CompletionList(items.Values.ToArray());
+            }
+
+            var attributes = GetAttributeCompletions(
+                completionFacts,
+                GetCurrentOpeningTagName(document.Text, index)
+            );
+            foreach (var attribute in attributes)
+            {
+                AddCompletionItem(
+                    items,
+                    attribute,
+                    new
+                    {
+                        label = attribute,
+                        kind = 10,
+                        detail = "CSMX attribute from this file",
+                    }
+                );
+            }
+
+            if (TryCreateDocumentSnapshot(document, out var attributeSnapshot))
             {
                 AddRoslynCompletionItems(
                     items,
-                    _roslynWorkspace.GetTagCompletions(snapshot, index)
+                    _roslynWorkspace.GetAttributeCompletions(
+                        attributeSnapshot,
+                        index,
+                        GetCurrentOpeningTagName(document.Text, index)
+                    )
                 );
             }
 
             return CompletionList(items.Values.ToArray());
         }
-
-        var attributes = GetAttributeCompletions(
-            completionFacts,
-            GetCurrentOpeningTagName(document.Text, index)
-        );
-        foreach (var attribute in attributes)
+        catch
         {
-            AddCompletionItem(
-                items,
-                attribute,
-                new
+            return EmptyCompletionResult;
+        }
+    }
+
+    private object? HandleHover(JsonElement parameters)
+    {
+        try
+        {
+            if (
+                !TryReadDocumentPosition(parameters, out var uri, out var line, out var character)
+                || !_documents.TryGetValue(uri, out var document)
+            )
+            {
+                return null;
+            }
+
+            var index = document.LineMap.GetIndex(line, character);
+            if (TryCreateDocumentSnapshot(document, out var snapshot))
+            {
+                var roslynHover = _roslynWorkspace.GetHover(snapshot, index);
+                if (roslynHover is not null)
                 {
-                    label = attribute,
-                    kind = 10,
-                    detail = "CSMX attribute from this file",
+                    return new { contents = new { kind = "markdown", value = roslynHover.Markdown } };
                 }
-            );
-        }
+            }
 
-        if (TryCreateDocumentSnapshot(document, out var attributeSnapshot))
+            var value = GetSyntaxHover(document.Text, index);
+
+            return value is null ? null : new { contents = new { kind = "markdown", value } };
+        }
+        catch
         {
-            AddRoslynCompletionItems(
-                items,
-                _roslynWorkspace.GetAttributeCompletions(
-                    attributeSnapshot,
-                    index,
-                    GetCurrentOpeningTagName(document.Text, index)
-                )
-            );
+            return null;
         }
-
-        return CompletionList(items.Values.ToArray());
     }
 
     private static void AddTagCompletionItems(
@@ -192,31 +231,6 @@ internal sealed partial class LspServer
 
     private static object CompletionList(IReadOnlyList<object> items) =>
         new { isIncomplete = false, items };
-
-    private object? HandleHover(JsonElement parameters)
-    {
-        if (
-            !TryReadDocumentPosition(parameters, out var uri, out var line, out var character)
-            || !_documents.TryGetValue(uri, out var document)
-        )
-        {
-            return null;
-        }
-
-        var index = document.LineMap.GetIndex(line, character);
-        if (TryCreateDocumentSnapshot(document, out var snapshot))
-        {
-            var roslynHover = _roslynWorkspace.GetHover(snapshot, index);
-            if (roslynHover is not null)
-            {
-                return new { contents = new { kind = "markdown", value = roslynHover.Markdown } };
-            }
-        }
-
-        var value = GetSyntaxHover(document.Text, index);
-
-        return value is null ? null : new { contents = new { kind = "markdown", value } };
-    }
 
     private object HandleDefinition(JsonElement parameters)
     {
@@ -418,24 +432,31 @@ internal sealed partial class LspServer
 
     private object HandleSemanticTokens(JsonElement parameters)
     {
-        if (
-            !TryReadTextDocumentUri(parameters, out var uri)
-            || !_documents.TryGetValue(uri, out var document)
-        )
+        try
+        {
+            if (
+                !TryReadTextDocumentUri(parameters, out var uri)
+                || !_documents.TryGetValue(uri, out var document)
+            )
+            {
+                return new { data = Array.Empty<int>() };
+            }
+
+            IReadOnlyList<RoslynSemanticToken>? roslynTokens = null;
+            if (
+                document.ProjectContext is not null
+                && TryCreateDocumentSnapshot(document, out var snapshot)
+            )
+            {
+                roslynTokens = _roslynWorkspace.GetSemanticTokens(snapshot);
+            }
+
+            return new { data = BuildSemanticTokenData(document.Text, document.LineMap, roslynTokens) };
+        }
+        catch
         {
             return new { data = Array.Empty<int>() };
         }
-
-        IReadOnlyList<RoslynSemanticToken>? roslynTokens = null;
-        if (
-            document.ProjectContext is not null
-            && TryCreateDocumentSnapshot(document, out var snapshot)
-        )
-        {
-            roslynTokens = _roslynWorkspace.GetSemanticTokens(snapshot);
-        }
-
-        return new { data = BuildSemanticTokenData(document.Text, document.LineMap, roslynTokens) };
     }
 
     private static bool TryReadDocumentPosition(

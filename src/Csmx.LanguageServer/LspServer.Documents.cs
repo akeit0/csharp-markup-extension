@@ -78,7 +78,7 @@ internal sealed partial class LspServer
     {
         var sourcePath = TryGetFilePathFromUri(uri);
         var projectContext = CsmxProjectContext.TryCreate(sourcePath, _projectContextOptions);
-        var transformed = CsmxTransformer.Transform(
+        var transformed = SafeTransform(
             text,
             sourcePath,
             projectContext?.TransformOptions ?? CsmxTransformOptions.Default
@@ -104,7 +104,7 @@ internal sealed partial class LspServer
             return document;
         }
 
-        var transformed = CsmxTransformer.Transform(
+        var transformed = SafeTransform(
             document.Text,
             sourcePath,
             projectContext?.TransformOptions ?? CsmxTransformOptions.Default
@@ -114,6 +114,40 @@ internal sealed partial class LspServer
         _documents[uri] = refreshed;
         QueuePublishDocumentDiagnostics(refreshed);
         return refreshed;
+    }
+
+    private static CsmxTransformResult SafeTransform(
+        string text,
+        string? sourcePath,
+        CsmxTransformOptions options
+    )
+    {
+        try
+        {
+            return CsmxTransformer.Transform(text, sourcePath, options);
+        }
+        catch (Exception error)
+        {
+            return new CsmxTransformResult(
+                text,
+                [
+                    new CsmxDiagnostic(
+                        $"CSMX transform failed while editing: {error.Message}",
+                        new TextSpan(0, Math.Min(text.Length, 1))
+                    ),
+                ],
+                text.Length == 0
+                    ? Array.Empty<SourceMapEntry>()
+                    :
+                    [
+                        new SourceMapEntry(
+                            new TextSpan(0, text.Length),
+                            new TextSpan(0, text.Length),
+                            ProjectionKind.CSharp
+                        ),
+                    ]
+            );
+        }
     }
 
     private void QueuePublishDocumentDiagnostics(OpenDocument document)

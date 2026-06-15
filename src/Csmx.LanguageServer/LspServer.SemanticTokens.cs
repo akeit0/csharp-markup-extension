@@ -241,9 +241,16 @@ internal sealed partial class LspServer
         private void ScanJsxElementFacts()
         {
             var start = _pos;
-            var facts = CsmxFacts.ParseElement(_text, start, CsmxTransformOptions.Default);
-            AddJsxFactTokens(facts.Element);
-            _pos = Math.Max(facts.Position, start + 1);
+            try
+            {
+                var facts = CsmxFacts.ParseElement(_text, start, CsmxTransformOptions.Default);
+                AddJsxFactTokens(facts.Element);
+                _pos = Math.Max(facts.Position, start + 1);
+            }
+            catch
+            {
+                _pos = start + 1;
+            }
         }
 
         private void AddJsxFactTokens(CsmxElementFact element)

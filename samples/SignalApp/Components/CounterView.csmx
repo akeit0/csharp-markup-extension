@@ -12,7 +12,7 @@ public static class CounterView
        renderCount++;
        return <Column Padding={24} Gap={14} Background="#f5f7fb">
             <Text FontSize={28} FontWeight={700} Color="#152033">CSMX Signals</Text>
-            <Text FontSize={18}>Count: {count, 3}</Text>
+            <Text FontSize={22} Color="#152033">Counter: {count}</Text>
             <Text FontSize={18} Color="#0011ff">Render Count: {renderCount}</Text>
             <Row Gap={10}>
                 <Button Width={70} OnClick={() => setCount(value => value - 1)}>-</Button>

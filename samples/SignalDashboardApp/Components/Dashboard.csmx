@@ -22,9 +22,11 @@ public static class Dashboard
                 )
                 .ToArray();
         var totalEstimate = visible.Sum(item => item.Estimate);
-        
+
         return <Column Padding={20} Gap={12} Background="#eef2f7">
             <Text FontSize={28} FontWeight={700} Color="#102033">Signal Dashboard</Text>
+            <Text FontSize={18} Color="#0011ff">Render Count: {RenderCalls}</Text>
+
             <Row Gap={8}>
                 <Button Width={120} OnClick={() => setFilter(value => value.Length == 0 ? "UI" : "")}>Toggle UI</Button>
                 <Button Width={120} Background="#475569" OnClick={() => setItems(value => value.Reverse().ToArray())}>Reverse</Button>

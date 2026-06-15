@@ -37,7 +37,14 @@ internal sealed partial class LspServer
 
             using (message)
             {
-                await DispatchAsync(message.RootElement);
+                try
+                {
+                    await DispatchAsync(message.RootElement);
+                }
+                catch
+                {
+                    // Keep the editor session alive after transient malformed input.
+                }
             }
         }
     }

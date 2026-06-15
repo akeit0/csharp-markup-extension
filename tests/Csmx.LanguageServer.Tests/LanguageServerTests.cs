@@ -898,6 +898,50 @@ public static class BrokenDiagnostics
     }
 
     [Test]
+    public async Task TestLanguageServerKeepsServingAfterMalformedTagEdit()
+    {
+        var repositoryRoot = FindRepositoryRoot();
+        var sourcePath = Path.Combine(
+            repositoryRoot,
+            "tests",
+            "Csmx.LanguageServer.Tests",
+            "Fixtures",
+            "ProjectContextSmoke",
+            "Components",
+            "CounterView.csmx"
+        );
+        var source = await File.ReadAllTextAsync(sourcePath);
+        var uri = new Uri(sourcePath).AbsoluteUri;
+        var malformed = source.Replace(
+            "<Column><Text>Count: {count}</Text></Column>",
+            "<Column Padding={24",
+            StringComparison.Ordinal
+        );
+
+        await using var client = await LspTestClient.StartAsync();
+        await client.InitializeAsync();
+        client.DidOpen(uri, source);
+        client.DidChange(uri, malformed);
+
+        _ = await client.SemanticTokensAsync(uri);
+        _ = await client.HoverAsync(
+            uri,
+            PositionAt(malformed, malformed.IndexOf("<Column", StringComparison.Ordinal) + 1)
+        );
+        _ = await client.CompletionAsync(
+            uri,
+            PositionAt(malformed, malformed.IndexOf("<Column", StringComparison.Ordinal) + 1)
+        );
+
+        client.DidChange(uri, source, version: 3);
+        var completions = await client.CompletionAsync(
+            uri,
+            PositionAt(source, source.IndexOf("count", StringComparison.Ordinal))
+        );
+        AssertHasCompletion(completions, "count", "completion after recovering from malformed tag");
+    }
+
+    [Test]
     public async Task TestRoslynHoverResolvesProjectSymbols()
     {
         var repositoryRoot = FindRepositoryRoot();
